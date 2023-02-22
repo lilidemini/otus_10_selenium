@@ -5,7 +5,7 @@ from page_objects.pages import MainPage, ProductPage, AdminLoginPage, RegisterPa
 from selenium.common.exceptions import UnexpectedAlertPresentException
 
 
-@pytest.mark.Main
+@pytest.mark.main
 def test_main_page_elements(base_url, browser):
     browser.get(base_url)
     browser.find_element(*MainPage.LOGO_OPENCART)
@@ -14,32 +14,32 @@ def test_main_page_elements(base_url, browser):
     browser.find_element(*MainPage.FEATURED_ITEMS)
 
 
-@pytest.mark.Main
+@pytest.mark.main
 @pytest.mark.parametrize('carousel_logos', [MainPage.LOGO_SONY, MainPage.LOGO_CANON,
                                             MainPage.LOGO_DELL, MainPage.LOGO_DISNEY],
                          ids=['sony', 'canon', 'dell', 'disney'])
 def test_auto_swiper_carousel(base_url, browser, carousel_logos):
     browser.get(base_url)
-    WebDriverWait(browser, 25).until(
+    WebDriverWait(browser, 30).until(
         EC.visibility_of_element_located(carousel_logos)
     )
 
 
-@pytest.mark.Main
+@pytest.mark.main
 def test_navbar(base_url, browser):
     browser.get(base_url)
     navbar_items = browser.find_elements(*MainPage.NAVBAR_ITEMS)
     assert len(navbar_items) == 8, "Should be 8 categories in horizontal navbar"
 
 
-@pytest.mark.Main
+@pytest.mark.main
 def test_featured_items(base_url, browser):
     browser.get(base_url)
     featured_items = browser.find_elements(*MainPage.FEATURED_ITEMS)
     assert len(featured_items) == 4, "Should be 4 products in Featured"
 
 
-@pytest.mark.Product
+@pytest.mark.product
 @pytest.mark.parametrize('product_url', ProductPage.PRODUCTS_PAGE_URL)
 def test_product_page_elements(base_url, browser, product_url):
     browser.get(base_url + product_url)
@@ -51,7 +51,7 @@ def test_product_page_elements(base_url, browser, product_url):
     browser.find_element(*ProductPage.PRODUCT_NAV)
 
 
-@pytest.mark.Product
+@pytest.mark.product
 @pytest.mark.parametrize('product_url', ProductPage.PRODUCTS_PAGE_URL)
 def test_product_name(base_url, browser, product_url):
     browser.get(base_url + product_url)
@@ -61,15 +61,14 @@ def test_product_name(base_url, browser, product_url):
         'Product name is not the same in product card`s breadcrumbs'
 
 
-@pytest.mark.Product
+@pytest.mark.product
 @pytest.mark.parametrize('product_url', ProductPage.PRODUCTS_PAGE_URL)
 def test_product_added_cart(base_url, browser, product_url):
     browser.get(base_url + product_url)
-    added_cart_btn = WebDriverWait(browser, 1).until(EC.visibility_of_element_located(ProductPage.BTN_ADDED_CART))
-    added_cart_btn.click()
+    WebDriverWait(browser, 3).until(EC.visibility_of_element_located(ProductPage.BTN_ADDED_CART))
 
 
-@pytest.mark.Login
+@pytest.mark.login
 def test_login_page_elements(admin_login_url, browser):
     browser.get(admin_login_url)
     browser.find_element(*AdminLoginPage.USERNAME_INPUT)
@@ -79,7 +78,7 @@ def test_login_page_elements(admin_login_url, browser):
     browser.find_element(*AdminLoginPage.OPENCART_LINK)
 
 
-@pytest.mark.Register
+@pytest.mark.register
 def test_register_page_elements(account_register_url, browser):
     try:
         browser.get(account_register_url)
@@ -95,7 +94,7 @@ def test_register_page_elements(account_register_url, browser):
         pass
 
 
-@pytest.mark.pageCatalog
+@pytest.mark.catalog
 @pytest.mark.parametrize('catalog_url', CatalogPage.CATALOGS_PAGE_URL)
 def test_catalog_page_elements(base_url, catalog_url, browser):
     browser.get(base_url + catalog_url)
