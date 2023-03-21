@@ -2,7 +2,9 @@ import pytest
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from page_objects.pages import MainPage, ProductPage, AdminLoginPage, RegisterPage, CatalogPage
-from selenium.common.exceptions import UnexpectedAlertPresentException
+
+
+# from selenium.common.exceptions import UnexpectedAlertPresentException
 
 
 @pytest.mark.main
@@ -80,18 +82,17 @@ def test_login_page_elements(admin_login_url, browser):
 
 @pytest.mark.register
 def test_register_page_elements(account_register_url, browser):
-    try:
-        browser.get(account_register_url)
-        browser.find_element(*RegisterPage.FIRST_NAME_INPUT)
-        browser.find_element(*RegisterPage.LAST_NAME_INPUT)
-        browser.find_element(*RegisterPage.EMAIL_INPUT)
-        browser.find_element(*RegisterPage.TELEPHONE_INPUT)
-        browser.find_element(*RegisterPage.PASSWORD_INPUT)
-        browser.find_element(*RegisterPage.PASSWORD_CONFIRM_INPUT)
-        browser.find_element(*RegisterPage.DEFAULT_SUBSCRIBE)
-        browser.find_element(*RegisterPage.LOGIN_PAGE_LINK).click()
-    except UnexpectedAlertPresentException:
-        pass
+    browser.get(account_register_url)
+    alert = WebDriverWait(browser, 2).until(EC.alert_is_present())
+    alert.accept()
+    browser.find_element(*RegisterPage.FIRST_NAME_INPUT)
+    browser.find_element(*RegisterPage.LAST_NAME_INPUT)
+    browser.find_element(*RegisterPage.EMAIL_INPUT)
+    browser.find_element(*RegisterPage.TELEPHONE_INPUT)
+    browser.find_element(*RegisterPage.PASSWORD_INPUT)
+    browser.find_element(*RegisterPage.PASSWORD_CONFIRM_INPUT)
+    browser.find_element(*RegisterPage.DEFAULT_SUBSCRIBE)
+    browser.find_element(*RegisterPage.LOGIN_PAGE_LINK).click()
 
 
 @pytest.mark.catalog
