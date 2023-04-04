@@ -1,7 +1,11 @@
 import pytest
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from page_objects.pages import MainPage, ProductPage, AdminLoginPage, RegisterPage, CatalogPage
+from page_objects.main_page import MainPage
+from page_objects.product_page import ProductPage
+from page_objects.admin_login_page import AdminLoginPage
+from page_objects.register_page import RegisterPage
+from page_objects.catalog_page import CatalogPage
 
 
 # from selenium.common.exceptions import UnexpectedAlertPresentException

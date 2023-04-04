@@ -31,16 +31,6 @@ def base_url(request):
 
 
 @pytest.fixture
-def admin_login_url(request):
-    return request.config.getoption("--admin_login_url")
-
-
-@pytest.fixture
-def account_register_url(request):
-    return request.config.getoption("--account_register_url")
-
-
-@pytest.fixture
 def browser(request):
     browser_name = request.config.getoption("--browser")
 
