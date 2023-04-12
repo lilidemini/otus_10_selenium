@@ -8,27 +8,19 @@ from webdriver_manager.opera import OperaDriverManager
 
 
 def pytest_addoption(parser):
-    # URLS
+    # URL
     parser.addoption(
-        "--base_url", default="http://localhost:8081/", help="base URL for tests"
+        "--url", default="http://localhost", help="base URL for tests"
     )
-    parser.addoption(
-        "--admin_login_url", default="http://localhost:8081/admin", help="admin login URL for tests"
-    )
-    parser.addoption(
-        "--account_register_url", default="http://localhost:8081//index.php?route=account/register",
-        help="base URL for tests"
-    )
-    # BROWSERS
+    # BROWSER
     parser.addoption(
         "--browser", default="chrome", help="browsers for tests: chrome, firefox and opera"
     )
 
 
 @pytest.fixture
-def base_url(request):
-    return request.config.getoption("--base_url")
-
+def url(request):
+    return request.config.getoption("--url")
 
 @pytest.fixture
 def browser(request):
@@ -42,6 +34,7 @@ def browser(request):
         driver = webdriver.Opera(executable_path=OperaDriverManager().install())
     else:
         raise pytest.UsageError("--browser supported only Chrome, Firefox and Opera")
+    driver.maximize_window()
 
     request.addfinalizer(driver.close)
 
