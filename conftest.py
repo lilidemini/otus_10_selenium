@@ -1,13 +1,8 @@
-import allure
-import pytest
 import datetime
 import logging
+
+import pytest
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from webdriver_manager.firefox import GeckoDriverManager
-from webdriver_manager.opera import OperaDriverManager
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
@@ -53,6 +48,17 @@ def browser(request):
     log_level = request.config.getoption("--log_level")
     executor = request.config.getoption("--executor")
 
+    browser_name = request.config.getoption("--browser")
+    log_level = request.config.getoption("--log_level")
+
+    logger = logging.getLogger(request.node.name)
+    file_handler = logging.FileHandler(f"logs/{request.node.originalname}.log")
+    file_handler.setFormatter(logging.Formatter('%(levelname)s %(message)s'))
+    logger.addHandler(file_handler)
+    logger.setLevel(level=log_level)
+
+    logger.info("===> Test %s started at %s" % (request.node.name, datetime.datetime.now()))
+
     logger = logging.getLogger(request.node.name)
     file_handler = logging.FileHandler(f"logs/{request.node.originalname}.log")
     file_handler.setFormatter(logging.Formatter('%(levelname)s %(message)s'))
@@ -96,6 +102,12 @@ def browser(request):
     logger.info("Browser %s started" % browser)
 
     driver.maximize_window()
+
+    driver.log_level = log_level
+    driver.logger = logger
+    driver.test_name = request.node.name
+
+    logger.info("Browser %s started" % browser)
 
     def fin():
         driver.quit()

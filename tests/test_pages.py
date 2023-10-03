@@ -1,10 +1,11 @@
-import pytest
 import allure
-from selenium.webdriver.support.wait import WebDriverWait
+import pytest
 from selenium.webdriver.support import expected_conditions as EC
-from page_objects.MainPage import MainPage
+from selenium.webdriver.support.wait import WebDriverWait
+
 from page_objects.AdminLoginPage import AdminLoginPage
 from page_objects.CatalogPage import CatalogPage
+from page_objects.MainPage import MainPage
 from page_objects.ProductPage import ProductPage
 from page_objects.RegisterPage import RegisterPage
 
