@@ -1,19 +1,21 @@
 import pytest
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from page_objects.pages import MainPage, ProductPage, AdminLoginPage, RegisterPage, CatalogPage
-
-
-# from selenium.common.exceptions import UnexpectedAlertPresentException
+from page_objects.MainPage import MainPage
+from page_objects.AdminLoginPage import AdminLoginPage
+from page_objects.CatalogPage import CatalogPage
+from page_objects.ProductPage import ProductPage
+from page_objects.RegisterPage import RegisterPage
 
 
 @pytest.mark.main
 def test_main_page_elements(base_url, browser):
-    browser.get(base_url)
-    browser.find_element(*MainPage.LOGO_OPENCART)
-    browser.find_element(*MainPage.NAVBAR_ITEMS)
-    browser.find_element(*MainPage.SLIDER)
-    browser.find_element(*MainPage.FEATURED_ITEMS)
+    page = MainPage(browser)
+    page.open(base_url)
+    page.element(page.LOGO_OPENCART)
+    page.element(page.NAVBAR_ITEMS)
+    page.element(page.SLIDER)
+    page.element(page.FEATURED_ITEMS)
 
 
 @pytest.mark.main
@@ -21,7 +23,8 @@ def test_main_page_elements(base_url, browser):
                                             MainPage.LOGO_DELL, MainPage.LOGO_DISNEY],
                          ids=['sony', 'canon', 'dell', 'disney'])
 def test_auto_swiper_carousel(base_url, browser, carousel_logos):
-    browser.get(base_url)
+    page = MainPage(browser)
+    page.open(base_url)
     WebDriverWait(browser, 30).until(
         EC.visibility_of_element_located(carousel_logos)
     )
@@ -29,36 +32,40 @@ def test_auto_swiper_carousel(base_url, browser, carousel_logos):
 
 @pytest.mark.main
 def test_navbar(base_url, browser):
-    browser.get(base_url)
-    navbar_items = browser.find_elements(*MainPage.NAVBAR_ITEMS)
+    page = MainPage(browser)
+    page.open(base_url)
+    navbar_items = page.elements(page.NAVBAR_ITEMS)
     assert len(navbar_items) == 8, "Should be 8 categories in horizontal navbar"
 
 
 @pytest.mark.main
 def test_featured_items(base_url, browser):
-    browser.get(base_url)
-    featured_items = browser.find_elements(*MainPage.FEATURED_ITEMS)
+    page = MainPage(browser)
+    page.open(base_url)
+    featured_items = page.elements(page.FEATURED_ITEMS)
     assert len(featured_items) == 4, "Should be 4 products in Featured"
 
 
 @pytest.mark.product
 @pytest.mark.parametrize('product_url', ProductPage.PRODUCTS_PAGE_URL)
-def test_product_page_elements(base_url, browser, product_url):
-    browser.get(base_url + product_url)
-    browser.find_element(*ProductPage.BREADCRUMB_ITEMS)
-    browser.find_element(*ProductPage.PRODUCT_NAME)
-    browser.find_element(*ProductPage.PRODUCT_PRICE)
-    browser.find_element(*ProductPage.BTN_ADDED_CART)
-    browser.find_element(*ProductPage.PRODUCT_IMAGES)
-    browser.find_element(*ProductPage.PRODUCT_NAV)
+def test_product_page_elements(browser, base_url, product_url):
+    product_page = ProductPage(browser)
+    product_page.open(base_url + product_url)
+    product_page.element(product_page.BTN_ADDED_CART)
+    product_page.element(product_page.BREADCRUMB_ITEM)
+    product_page.element(product_page.PRODUCT_NAME)
+    product_page.element(product_page.PRODUCT_PRICE)
+    product_page.elements(product_page.PRODUCT_IMAGE)
+    product_page.element(product_page.PRODUCT_NAV)
 
 
 @pytest.mark.product
 @pytest.mark.parametrize('product_url', ProductPage.PRODUCTS_PAGE_URL)
-def test_product_name(base_url, browser, product_url):
-    browser.get(base_url + product_url)
-    product_name = browser.find_element(*ProductPage.PRODUCT_NAME)
-    breadcrumbs = browser.find_elements(*ProductPage.BREADCRUMB_ITEMS)
+def test_product_name(browser, base_url, product_url):
+    product_page = ProductPage(browser)
+    product_page.open(base_url + product_url)
+    product_name = product_page.element(product_page.PRODUCT_NAME)
+    breadcrumbs = product_page.elements(product_page.BREADCRUMB_ITEM)
     assert breadcrumbs[-1].text == product_name.text, \
         'Product name is not the same in product card`s breadcrumbs'
 
@@ -66,41 +73,41 @@ def test_product_name(base_url, browser, product_url):
 @pytest.mark.product
 @pytest.mark.parametrize('product_url', ProductPage.PRODUCTS_PAGE_URL)
 def test_product_added_cart(base_url, browser, product_url):
-    browser.get(base_url + product_url)
-    WebDriverWait(browser, 3).until(EC.visibility_of_element_located(ProductPage.BTN_ADDED_CART))
+    product_page = ProductPage(browser)
+    product_page.open(base_url + product_url)
+    product_page.click(product_page.BTN_ADDED_CART)
 
 
 @pytest.mark.login
 def test_login_page_elements(admin_login_url, browser):
-    browser.get(admin_login_url)
-    browser.find_element(*AdminLoginPage.USERNAME_INPUT)
-    browser.find_element(*AdminLoginPage.PASSWORD_INPUT)
-    browser.find_element(*AdminLoginPage.LOGIN_BUTTON)
-    browser.find_element(*AdminLoginPage.FORGOTTEN_PASSWORD)
-    browser.find_element(*AdminLoginPage.OPENCART_LINK)
+    admin_page = AdminLoginPage(browser)
+    admin_page.open(admin_login_url)
+    admin_page.element(admin_page.USERNAME_INPUT)
+    admin_page.element(admin_page.PASSWORD_INPUT)
+    admin_page.element(admin_page.LOGIN_BUTTON)
+    admin_page.element(admin_page.FORGOTTEN_PASSWORD)
+    admin_page.element(admin_page.OPENCART_LINK)
 
 
 @pytest.mark.register
 def test_register_page_elements(account_register_url, browser):
-    browser.get(account_register_url)
-    alert = WebDriverWait(browser, 2).until(EC.alert_is_present())
-    alert.accept()
-    browser.find_element(*RegisterPage.FIRST_NAME_INPUT)
-    browser.find_element(*RegisterPage.LAST_NAME_INPUT)
-    browser.find_element(*RegisterPage.EMAIL_INPUT)
-    browser.find_element(*RegisterPage.TELEPHONE_INPUT)
-    browser.find_element(*RegisterPage.PASSWORD_INPUT)
-    browser.find_element(*RegisterPage.PASSWORD_CONFIRM_INPUT)
-    browser.find_element(*RegisterPage.DEFAULT_SUBSCRIBE)
-    browser.find_element(*RegisterPage.LOGIN_PAGE_LINK).click()
+    register_page = RegisterPage(browser)
+    register_page.open(account_register_url)
+    register_page.element(register_page.FIRST_NAME_INPUT)
+    register_page.element(register_page.LAST_NAME_INPUT)
+    register_page.element(register_page.EMAIL_INPUT)
+    register_page.element(register_page.PASSWORD_INPUT)
+    register_page.element(register_page.DEFAULT_SUBSCRIBE)
+    register_page.click(register_page.LOGIN_PAGE_LINK)
 
 
 @pytest.mark.catalog
 @pytest.mark.parametrize('catalog_url', CatalogPage.CATALOGS_PAGE_URL)
 def test_catalog_page_elements(base_url, catalog_url, browser):
-    browser.get(base_url + catalog_url)
-    browser.find_element(*CatalogPage.BREADCRUMB_ITEMS)
-    browser.find_element(*CatalogPage.CATALOG_NAME)
-    browser.find_element(*CatalogPage.SIDEBAR)
-    browser.find_element(*CatalogPage.SORT)
-    browser.find_element(*CatalogPage.CATALOG_PRODUCT)
+    catalog_page = CatalogPage(browser)
+    catalog_page.open(base_url + catalog_url)
+    catalog_page.element(catalog_page.BREADCRUMB_ITEMS)
+    catalog_page.element(catalog_page.CATALOG_NAME)
+    catalog_page.element(catalog_page.SIDEBAR)
+    catalog_page.element(catalog_page.SORT)
+    catalog_page.element(catalog_page.CATALOG_PRODUCT)

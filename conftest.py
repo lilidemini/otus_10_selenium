@@ -1,4 +1,6 @@
 import pytest
+import datetime
+import logging
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -8,20 +10,21 @@ from webdriver_manager.opera import OperaDriverManager
 
 
 def pytest_addoption(parser):
-    # URLS
     parser.addoption(
-        "--base_url", default="http://localhost:8081/", help="base URL for tests"
+        "--base_url", default="http://localhost/", help="base URL for tests"
     )
     parser.addoption(
-        "--admin_login_url", default="http://localhost:8081/admin", help="admin login URL for tests"
+        "--admin_login_url", default="http://localhost/admin", help="admin login URL for tests"
     )
     parser.addoption(
-        "--account_register_url", default="http://localhost:8081//index.php?route=account/register",
+        "--account_register_url", default="http://localhost//index.php?route=account/register",
         help="base URL for tests"
     )
-    # BROWSERS
     parser.addoption(
         "--browser", default="chrome", help="browsers for tests: chrome, firefox and opera"
+    )
+    parser.addoption(
+        "--log_level", action="store", default="DEBUG"
     )
 
 
@@ -43,6 +46,15 @@ def account_register_url(request):
 @pytest.fixture
 def browser(request):
     browser_name = request.config.getoption("--browser")
+    log_level = request.config.getoption("--log_level")
+
+    logger = logging.getLogger(request.node.name)
+    file_handler = logging.FileHandler(f"logs/{request.node.originalname}.log")
+    file_handler.setFormatter(logging.Formatter('%(levelname)s %(message)s'))
+    logger.addHandler(file_handler)
+    logger.setLevel(level=log_level)
+
+    logger.info("===> Test %s started at %s" % (request.node.name, datetime.datetime.now()))
 
     if browser_name == "chrome":
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
@@ -53,6 +65,15 @@ def browser(request):
     else:
         raise pytest.UsageError("--browser supported only Chrome, Firefox and Opera")
 
-    request.addfinalizer(driver.close)
+    driver.log_level = log_level
+    driver.logger = logger
+    driver.test_name = request.node.name
 
+    logger.info("Browser %s started" % browser)
+
+    def fin():
+        driver.quit()
+        logger.info("===> Test %s finished at %s" % (request.node.name, datetime.datetime.now()))
+
+    request.addfinalizer(fin)
     return driver
