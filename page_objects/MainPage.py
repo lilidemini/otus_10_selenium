@@ -1,5 +1,8 @@
-from page_objects.BasePage import BasePage
 from selenium.webdriver.common.by import By
+
+from page_objects.BasePage import BasePage
+
+
 class MainPage(BasePage):
     LOGO_OPENCART = (By.CSS_SELECTOR, '#logo')
     NAVBAR_ITEMS = (By.CSS_SELECTOR, ".nav > li")
@@ -12,4 +15,5 @@ class MainPage(BasePage):
     LOGO_DELL = (By.CSS_SELECTOR, '##carousel-banner-1 .active [alt="Dell"]')
     LOGO_CANON = (By.CSS_SELECTOR, '#carousel-banner-1 .active [alt="Canon"]')
     LOGO_SONY = (By.CSS_SELECTOR, '#carousel-banner-1 .active [alt="Sony"]')
+    LOGO_NINTENDO = (By.CSS_SELECTOR, '#carousel-banner-1 .active [alt="Nintendo"]')
     LOGO_NINTENDO = (By.CSS_SELECTOR, '#carousel-banner-1 .active [alt="Nintendo"]')

@@ -1,5 +1,7 @@
-from page_objects.BasePage import BasePage
 from selenium.webdriver.common.by import By
+
+from page_objects.BasePage import BasePage
+
 
 class RegisterPage(BasePage):
     LOGIN_PAGE_LINK = (By.LINK_TEXT, "login page")
