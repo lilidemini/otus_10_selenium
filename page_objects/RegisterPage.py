@@ -1,6 +1,7 @@
 from page_objects.BasePage import BasePage
 from selenium.webdriver.common.by import By
 
+
 class RegisterPage(BasePage):
     LOGIN_PAGE_LINK = (By.LINK_TEXT, "login page")
     FIRST_NAME_INPUT = (By.CSS_SELECTOR, '#input-firstname')

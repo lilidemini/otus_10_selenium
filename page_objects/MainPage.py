@@ -1,5 +1,7 @@
 from page_objects.BasePage import BasePage
 from selenium.webdriver.common.by import By
+
+
 class MainPage(BasePage):
     LOGO_OPENCART = (By.CSS_SELECTOR, '#logo')
     NAVBAR_ITEMS = (By.CSS_SELECTOR, ".nav > li")

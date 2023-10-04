@@ -1,6 +1,7 @@
 from page_objects.BasePage import BasePage
 from selenium.webdriver.common.by import By
 
+
 class AdminLoginPage(BasePage):
     USERNAME_INPUT = (By.CSS_SELECTOR, "#input-username")
     PASSWORD_INPUT = (By.CSS_SELECTOR, '[name="password"]')

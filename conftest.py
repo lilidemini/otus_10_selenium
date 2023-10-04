@@ -21,7 +21,7 @@ def pytest_addoption(parser):
         help="base URL for tests"
     )
     parser.addoption(
-        "--browser", default="chrome", help="browsers for tests: chrome, firefox and opera"
+        "--browser", default="firefox", help="browsers for tests: chrome, firefox and opera"
     )
     parser.addoption(
         "--log_level", action="store", default="DEBUG"
@@ -70,6 +70,8 @@ def browser(request):
     driver.test_name = request.node.name
 
     logger.info("Browser %s started" % browser)
+
+    driver.maximize_window()
 
     def fin():
         driver.quit()
